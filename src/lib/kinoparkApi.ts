@@ -22,21 +22,30 @@ export type TransactionsResponse = {
   ResponseMessage: string | null;
 };
 
+// NOTE: the live endpoint that responds is GetTransactionsHistory.
+// The user is identified by the token, not by PhoneNumber — so today
+// every caller will see the token owner's data. Replace API_TOKEN with
+// a service token that accepts an arbitrary PhoneNumber when ready.
 export async function getPurchaseHistory(
-  phoneNumber: string,
+  _phoneNumber: string,
 ): Promise<TransactionsResponse | null> {
   if (!BASE_URL || !TOKEN) return null;
 
   try {
-    const res = await fetch(`${BASE_URL}/api/Payment/GetPurchaseHistory`, {
-      method: "POST",
-      headers: {
-        Authorization: TOKEN,
-        "Content-Type": "application/json",
+    const res = await fetch(
+      `${BASE_URL}/api/Payment/GetTransactionsHistory`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: TOKEN,
+          "Content-Type": "application/json",
+          Referer: "https://kinopark.am/",
+          Origin: "https://kinopark.am",
+        },
+        body: JSON.stringify({}),
+        cache: "no-store",
       },
-      body: JSON.stringify({ PhoneNumber: phoneNumber }),
-      cache: "no-store",
-    });
+    );
     if (!res.ok) return null;
     return (await res.json()) as TransactionsResponse;
   } catch {
@@ -67,6 +76,8 @@ export async function getTransactionDetails(
       headers: {
         Authorization: TOKEN,
         "Content-Type": "application/json",
+        Referer: "https://kinopark.am/",
+        Origin: "https://kinopark.am",
       },
       body: JSON.stringify({ OrderId: orderId }),
       cache: "no-store",
