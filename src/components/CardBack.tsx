@@ -12,13 +12,27 @@ export function CardBack() {
       className="relative w-full h-full overflow-hidden select-none"
       style={{
         aspectRatio: "16 / 9",
-        background: "#0A0A0A",
+        background: "rgba(10, 10, 10, 0.55)",
+        backdropFilter: "blur(20px) saturate(160%)",
+        WebkitBackdropFilter: "blur(20px) saturate(160%)",
         borderRadius: "1.5cqw",
         containerType: "inline-size",
         color: "#FCFCFD",
-        border: "1px solid rgba(255,255,255,0.06)",
+        border: "1px solid rgba(255,255,255,0.12)",
+        boxShadow:
+          "inset 0 1px 0 0 rgba(255,255,255,0.1), 0 8px 32px rgba(0,0,0,0.4)",
       }}
     >
+      {/* Top shimmer highlight — gives the glass edge */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-60"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)",
+        }}
+      />
+
       {/* Atmospheric corner glow — same as the landing hero */}
       <div
         aria-hidden
