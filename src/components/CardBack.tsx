@@ -50,12 +50,15 @@ export function CardBack() {
         <div
           style={{
             color: "#A8C53C",
-            fontSize: "1.05cqw",
-            fontWeight: 500,
-            letterSpacing: "0.06em",
+            fontSize: "2cqw",
+            fontWeight: 600,
+            letterSpacing: "0.02em",
+            textAlign: "center",
+            maxWidth: "70%",
+            lineHeight: 1.3,
           }}
         >
-          Your cinema character is loading…
+          Your tickets tell a story. Let&apos;s read it.
         </div>
       </div>
     </div>
