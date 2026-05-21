@@ -186,7 +186,7 @@ export function MovieCard({
             }}
           >
             <span style={{ color: accent, fontSize: "2cqw" }}>🎟️</span>
-            <span>{reward.label}</span>
+            <span>Free Salty Popcorn</span>
           </div>
           <div
             style={{
