@@ -200,7 +200,7 @@ export function MovieCardStory({
           <div
             className="kp-display"
             style={{
-              fontSize: "9cqw",
+              fontSize: "6cqw",
               fontWeight: 800,
               lineHeight: 1,
               letterSpacing: "-0.01em",
@@ -208,11 +208,12 @@ export function MovieCardStory({
               color: ink,
               display: "flex",
               alignItems: "center",
-              gap: "1.6cqw",
-              flexWrap: "wrap",
+              gap: "1.2cqw",
+              flexWrap: "nowrap",
+              whiteSpace: "nowrap",
             }}
           >
-            <span style={{ color: accent, fontSize: "8cqw", lineHeight: 1 }}>🎟️</span>
+            <span style={{ color: accent, fontSize: "5.5cqw", lineHeight: 1 }}>🎟️</span>
             <span>{reward.label}</span>
           </div>
 
