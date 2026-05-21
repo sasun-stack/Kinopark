@@ -111,7 +111,7 @@ export function MovieCardStory({
       >
         {/* Top strip: KP logo + behaviour badge */}
         <div className="flex items-center justify-between">
-          <span style={{ height: "5cqw", display: "inline-flex" }}>
+          <span style={{ height: "6.5cqw", display: "inline-flex" }}>
             <KinoLogo />
           </span>
           <BadgePill label={badge.label} />
@@ -198,21 +198,8 @@ export function MovieCardStory({
             toggles reveal in the modal. */}
         <div style={{ marginTop: "5cqw" }}>
           <div
-            style={{
-              color: ink,
-              opacity: 0.65,
-              fontSize: "2.4cqw",
-              fontStyle: "italic",
-              lineHeight: 1.35,
-            }}
-          >
-            {reward.flair}
-          </div>
-
-          <div
             className="kp-display"
             style={{
-              marginTop: "2cqw",
               fontSize: "9cqw",
               fontWeight: 800,
               lineHeight: 1,
@@ -225,8 +212,8 @@ export function MovieCardStory({
               flexWrap: "wrap",
             }}
           >
-            <span>{reward.label}</span>
             <span style={{ color: accent, fontSize: "8cqw", lineHeight: 1 }}>🎟️</span>
+            <span>{reward.label}</span>
           </div>
 
           <div
