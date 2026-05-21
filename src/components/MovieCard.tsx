@@ -155,7 +155,7 @@ export function MovieCard({
             lineHeight: 1,
           }}
         >
-          ✦
+          🎬
         </span>
         <span style={{ color: ink, opacity: 0.92 }}>{insight}</span>
       </div>
@@ -185,7 +185,7 @@ export function MovieCard({
               gap: "0.8cqw",
             }}
           >
-            <span style={{ color: accent, fontSize: "2cqw" }}>✦</span>
+            <span style={{ color: accent, fontSize: "2cqw" }}>🎟️</span>
             <span>{reward.label}</span>
           </div>
           <div

@@ -188,7 +188,7 @@ export function MovieCardStory({
               marginTop: "0.2cqw",
             }}
           >
-            ✦
+            🎬
           </span>
           <span style={{ color: ink, opacity: 0.92 }}>{insight}</span>
         </div>
@@ -226,7 +226,7 @@ export function MovieCardStory({
             }}
           >
             <span>{reward.label}</span>
-            <span style={{ color: accent, fontSize: "8cqw", lineHeight: 1 }}>✦</span>
+            <span style={{ color: accent, fontSize: "8cqw", lineHeight: 1 }}>🎟️</span>
           </div>
 
           <div
