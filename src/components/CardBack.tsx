@@ -1,18 +1,6 @@
 "use client";
 
 import { KinoLogo } from "@/components/KinoLogo";
-import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
-
-const LOADING_WORDS = [
-  { text: "Your" },
-  { text: "tickets" },
-  { text: "tell" },
-  { text: "a" },
-  { text: "story." },
-  { text: "Let's", className: "text-[#A8C53C]" },
-  { text: "read", className: "text-[#A8C53C]" },
-  { text: "it.", className: "text-[#A8C53C]" },
-];
 
 /**
  * Card back — KinoPark dark base + atmospheric corner glows + the real
@@ -73,11 +61,19 @@ export function CardBack() {
           <KinoLogo markOnly />
         </span>
 
-        <TypewriterEffectSmooth
-          words={LOADING_WORDS}
-          className="!my-0 justify-center"
-          cursorClassName="bg-[#A8C53C]"
-        />
+        <div
+          style={{
+            color: "#A8C53C",
+            fontSize: "2cqw",
+            fontWeight: 600,
+            letterSpacing: "0.02em",
+            textAlign: "center",
+            maxWidth: "70%",
+            lineHeight: 1.3,
+          }}
+        >
+          Your tickets tell a story. Let&apos;s read it.
+        </div>
       </div>
     </div>
   );

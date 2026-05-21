@@ -9,7 +9,6 @@ import { MovieCardStory } from "@/components/MovieCardStory";
 import { CardBack } from "@/components/CardBack";
 import { CardScene } from "@/components/CardScene";
 import { KinoLogo } from "@/components/KinoLogo";
-import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import type { Archetype, Badge, CardStats, Reward } from "@/lib/archetypes";
 
 type CardFormat = "horizontal" | "story";
@@ -504,15 +503,17 @@ export function PageClient() {
 
             {(stage === "loading" || stage === "revealing") && (
               <div className="flex flex-col items-center gap-3 fade-in">
-                <TypewriterEffectSmooth
+                <p
                   key={stepIndex}
-                  words={ANALYSIS_STEPS[stepIndex].split(" ").map((w) => ({
-                    text: w,
-                    className: "text-[rgba(252,252,253,0.85)]",
-                  }))}
-                  className="!my-0"
-                  cursorClassName="bg-[rgba(202,76,22,0.85)]"
-                />
+                  className="fade-in"
+                  style={{
+                    fontSize: "0.95rem",
+                    color: "rgba(252,252,253,0.85)",
+                    fontWeight: 500,
+                  }}
+                >
+                  {ANALYSIS_STEPS[stepIndex]}…
+                </p>
                 <p
                   style={{
                     fontSize: "0.78rem",
