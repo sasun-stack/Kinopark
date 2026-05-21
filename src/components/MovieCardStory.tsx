@@ -214,7 +214,7 @@ export function MovieCardStory({
             }}
           >
             <span style={{ color: accent, fontSize: "5.5cqw", lineHeight: 1 }}>🎟️</span>
-            <span>{reward.label}</span>
+            <span>Free Salty Popcorn</span>
           </div>
 
           <div
