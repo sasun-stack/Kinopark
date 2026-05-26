@@ -9,6 +9,7 @@ import { MovieCardStory } from "@/components/MovieCardStory";
 import { CardBack } from "@/components/CardBack";
 import { CardScene } from "@/components/CardScene";
 import { KinoLogo } from "@/components/KinoLogo";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import type { Archetype, Badge, CardStats, Reward } from "@/lib/archetypes";
 
 type CardFormat = "horizontal" | "story";
@@ -344,16 +345,23 @@ export function PageClient() {
             <NavLink href="https://kinopark.am" label="Blog & Events" />
           </nav>
 
-          {/* CTA */}
-          <a
-            href="https://kinopark.am"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="kp-pill"
-            style={{ padding: "0.55rem 1.2rem", fontSize: "0.85rem", boxShadow: "none" }}
-          >
-            Buy Tickets
-          </a>
+          {/* Language + CTA */}
+          <div className="flex items-center" style={{ gap: "1rem" }}>
+            <LanguageSwitcher />
+            <a
+              href="https://kinopark.am"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="kp-pill"
+              style={{
+                padding: "0.55rem 1.2rem",
+                fontSize: "0.85rem",
+                boxShadow: "none",
+              }}
+            >
+              Buy Tickets
+            </a>
+          </div>
         </div>
       </header>
 
