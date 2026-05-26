@@ -84,6 +84,7 @@ export function LanguageSwitcher() {
         aria-label="Փոխել հայերենի"
         style={{
           ...baseStyle,
+          fontSize: "0.72rem",
           color: lang === "hy" ? "#FCFCFD" : "rgba(252,252,253,0.45)",
         }}
       >
