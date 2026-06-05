@@ -120,11 +120,11 @@ export function MovieCardStory({
             aria-hidden
             className="absolute pointer-events-none"
             style={{
-              left: "50%",
+              left: "63%",
               transform: "translateX(-50%)",
-              top: "40cqw",
-              width: "70cqw",
-              height: "62cqw",
+              top: "32cqw",
+              width: "82cqw",
+              height: "80cqw",
               background: `radial-gradient(ellipse 55% 50% at 50% 55%, ${withAlpha(accent, 0.30)} 0%, transparent 70%)`,
             }}
           />
@@ -134,10 +134,10 @@ export function MovieCardStory({
             alt={`${title} character`}
             className="absolute pointer-events-none select-none"
             style={{
-              left: "50%",
+              left: "63%",
               transform: "translateX(-50%)",
-              top: "42cqw",
-              height: "58cqw",
+              top: "34cqw",
+              height: "74cqw",
               width: "auto",
               objectFit: "contain",
               objectPosition: "bottom",
@@ -200,10 +200,10 @@ export function MovieCardStory({
           </div>
         </div>
 
-        {/* Stats — three columns, big numbers */}
+        {/* Stats — stacked vertically, big numbers (left column) */}
         <div
-          className="flex items-end"
-          style={{ marginTop: "auto", gap: "5cqw" }}
+          className="flex flex-col items-start"
+          style={{ marginTop: "auto", gap: "3cqw" }}
         >
           <Stat value={String(stats.moviesWatched)} label="Movies" accent={accent} ink={ink} />
           <Stat value={`${stats.premiumPct}%`} label="Premium" accent={accent} ink={ink} />
