@@ -2,6 +2,7 @@
 
 import type { Archetype, Badge, CardStats, Reward } from "@/lib/archetypes";
 import { KinoLogo } from "@/components/KinoLogo";
+import { getArchetypeImage } from "@/lib/archetypeImages";
 
 interface Props {
   archetype: Archetype;
@@ -42,9 +43,17 @@ export function MovieCard({
 }: Props) {
   const { title, genre, bg, ink, accent } = archetype;
 
+  // Optional character art. When present, text content is pulled in from the
+  // right to make room for the cut-out; otherwise the layout is untouched.
+  const characterImage = getArchetypeImage(archetype.id);
+  const contentRight = characterImage ? "36cqw" : "4cqw";
+
   // Title scaling — keep title to one line, leave room for stats below.
+  // Narrower text column when a character sits on the right.
   const titleLen = Math.max(title.length, 1);
-  const titleSize = `${Math.max(7, Math.min(11.5, 125 / titleLen))}cqw`;
+  const titleCap = characterImage ? 9 : 11.5;
+  const titleDivisor = characterImage ? 95 : 125;
+  const titleSize = `${Math.max(7, Math.min(titleCap, titleDivisor / titleLen))}cqw`;
 
   return (
     <div
@@ -77,6 +86,39 @@ export function MovieCard({
         }}
       />
 
+      {/* ── Character art (optional, right-anchored cut-out) ─────────── */}
+      {characterImage && (
+        <>
+          {/* Soft accent halo behind the character */}
+          <div
+            aria-hidden
+            className="absolute pointer-events-none"
+            style={{
+              right: "0",
+              bottom: "0",
+              width: "40cqw",
+              height: "52cqw",
+              background: `radial-gradient(ellipse 60% 55% at 68% 58%, ${withAlpha(accent, 0.30)} 0%, transparent 70%)`,
+            }}
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={characterImage}
+            alt={`${title} character`}
+            className="absolute pointer-events-none select-none"
+            style={{
+              right: "3cqw",
+              bottom: "0",
+              height: "53cqw",
+              width: "auto",
+              objectFit: "contain",
+              objectPosition: "bottom",
+              filter: "drop-shadow(0 0.8cqw 1.6cqw rgba(0,0,0,0.45))",
+            }}
+          />
+        </>
+      )}
+
       {/* ── Top strip: KP logo + behaviour badge ─────────────────────── */}
       <div
         className="absolute flex items-center justify-between"
@@ -92,7 +134,7 @@ export function MovieCard({
       {/* ── Title block — huge title + small genre stamp ───────────── */}
       <div
         className="absolute"
-        style={{ left: "4cqw", right: "4cqw", top: "22%" }}
+        style={{ left: "4cqw", right: contentRight, top: "22%" }}
       >
         <h2
           className="kp-display"
@@ -125,9 +167,9 @@ export function MovieCard({
         className="absolute flex items-end"
         style={{
           left: "4cqw",
-          right: "4cqw",
+          right: contentRight,
           bottom: "16cqw",
-          gap: "6cqw",
+          gap: characterImage ? "3cqw" : "6cqw",
         }}
       >
         <Stat value={String(stats.moviesWatched)} label="Movies" accent={accent} ink={ink} />
@@ -140,7 +182,7 @@ export function MovieCard({
         className="absolute flex items-center"
         style={{
           left: "4cqw",
-          right: "4cqw",
+          right: contentRight,
           bottom: "11cqw",
           gap: "1.2cqw",
           fontSize: "1.7cqw",
@@ -165,7 +207,7 @@ export function MovieCard({
         className="absolute flex items-center justify-between"
         style={{
           left: "4cqw",
-          right: "4cqw",
+          right: contentRight,
           bottom: "5.5cqw",
           gap: "2cqw",
         }}
@@ -225,7 +267,7 @@ export function MovieCard({
         className="absolute flex items-center justify-between"
         style={{
           left: "4cqw",
-          right: "4cqw",
+          right: contentRight,
           bottom: "2.5cqw",
           fontSize: "1cqw",
           letterSpacing: "0.22em",

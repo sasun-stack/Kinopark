@@ -2,6 +2,7 @@
 
 import type { Archetype, Badge, CardStats, Reward } from "@/lib/archetypes";
 import { KinoLogo } from "@/components/KinoLogo";
+import { getArchetypeImage } from "@/lib/archetypeImages";
 
 interface Props {
   archetype: Archetype;
@@ -43,6 +44,10 @@ export function MovieCardStory({
 }: Props) {
   const { title, genre, bg, ink, accent } = archetype;
 
+  // Character art as the card background. Explicit bgImageUrl wins; otherwise
+  // fall back to this archetype's illustration if one exists.
+  const resolvedBg = bgImageUrl ?? getArchetypeImage(archetype.id) ?? undefined;
+
   // Title scaling — 9:16 is narrow; titles need to wrap-friendly sizing.
   const titleLen = Math.max(title.length, 1);
   const titleSize = `${Math.max(8, Math.min(13, 140 / titleLen))}cqw`;
@@ -60,14 +65,14 @@ export function MovieCardStory({
       }}
     >
       {/* Background image layer (optional) */}
-      {bgImageUrl && (
+      {resolvedBg && (
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
-            backgroundImage: `url(${bgImageUrl})`,
+            backgroundImage: `url(${resolvedBg})`,
             backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundPosition: "center top",
             backgroundRepeat: "no-repeat",
           }}
         />
@@ -79,7 +84,7 @@ export function MovieCardStory({
         aria-hidden
         className="absolute inset-0"
         style={{
-          background: bgImageUrl
+          background: resolvedBg
             ? `linear-gradient(180deg, ${withAlpha(bg, 0.55)} 0%, ${withAlpha(bg, 0.3)} 35%, ${withAlpha(bg, 0.85)} 100%)`
             : "transparent",
         }}
