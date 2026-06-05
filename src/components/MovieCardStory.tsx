@@ -44,9 +44,10 @@ export function MovieCardStory({
 }: Props) {
   const { title, genre, bg, ink, accent } = archetype;
 
-  // Character art as the card background. Explicit bgImageUrl wins; otherwise
-  // fall back to this archetype's illustration if one exists.
-  const resolvedBg = bgImageUrl ?? getArchetypeImage(archetype.id) ?? undefined;
+  // Character art as the card background. A per-archetype illustration wins
+  // (so Anime etc. show their character); otherwise fall back to whatever
+  // bgImageUrl the parent passed (the default story SVG).
+  const resolvedBg = getArchetypeImage(archetype.id) ?? bgImageUrl ?? undefined;
 
   // Title scaling — 9:16 is narrow; titles need to wrap-friendly sizing.
   const titleLen = Math.max(title.length, 1);
