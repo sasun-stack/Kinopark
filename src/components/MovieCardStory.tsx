@@ -44,10 +44,12 @@ export function MovieCardStory({
 }: Props) {
   const { title, genre, bg, ink, accent } = archetype;
 
-  // Character art as the card background. A per-archetype illustration wins
-  // (so Anime etc. show their character); otherwise fall back to whatever
-  // bgImageUrl the parent passed (the default story SVG).
-  const resolvedBg = getArchetypeImage(archetype.id) ?? bgImageUrl ?? undefined;
+  // Per-archetype character art. When present we render it as a centred
+  // cut-out figure (like the horizontal card) over the solid archetype bg —
+  // NOT as a full-bleed background. Archetypes without art keep the default
+  // story SVG background passed via bgImageUrl.
+  const characterImage = getArchetypeImage(archetype.id);
+  const resolvedBg = characterImage ? undefined : bgImageUrl;
 
   // Title scaling — 9:16 is narrow; titles need to wrap-friendly sizing.
   const titleLen = Math.max(title.length, 1);
@@ -73,7 +75,7 @@ export function MovieCardStory({
           style={{
             backgroundImage: `url(${resolvedBg})`,
             backgroundSize: "cover",
-            backgroundPosition: "center top",
+            backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
           }}
         />
@@ -109,6 +111,41 @@ export function MovieCardStory({
             "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
         }}
       />
+
+      {/* ── Character art (optional, centred cut-out) ───────────────── */}
+      {characterImage && (
+        <>
+          {/* Soft accent halo behind the character */}
+          <div
+            aria-hidden
+            className="absolute pointer-events-none"
+            style={{
+              left: "50%",
+              transform: "translateX(-50%)",
+              top: "40cqw",
+              width: "70cqw",
+              height: "62cqw",
+              background: `radial-gradient(ellipse 55% 50% at 50% 55%, ${withAlpha(accent, 0.30)} 0%, transparent 70%)`,
+            }}
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={characterImage}
+            alt={`${title} character`}
+            className="absolute pointer-events-none select-none"
+            style={{
+              left: "50%",
+              transform: "translateX(-50%)",
+              top: "42cqw",
+              height: "58cqw",
+              width: "auto",
+              objectFit: "contain",
+              objectPosition: "bottom",
+              filter: "drop-shadow(0 1cqw 2cqw rgba(0,0,0,0.45))",
+            }}
+          />
+        </>
+      )}
 
       {/* ── Content stack ───────────────────────────────────────────── */}
       <div
