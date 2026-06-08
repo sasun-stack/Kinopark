@@ -122,7 +122,7 @@ export function MovieCardStory({
             style={{
               left: "63%",
               transform: "translateX(-50%)",
-              top: "44cqw",
+              top: "56cqw",
               width: "82cqw",
               height: "80cqw",
               background: `radial-gradient(ellipse 55% 50% at 50% 55%, ${withAlpha(accent, 0.30)} 0%, transparent 70%)`,
@@ -136,7 +136,7 @@ export function MovieCardStory({
             style={{
               left: "63%",
               transform: "translateX(-50%)",
-              top: "46cqw",
+              top: "58cqw",
               height: "74cqw",
               width: "auto",
               objectFit: "contain",
