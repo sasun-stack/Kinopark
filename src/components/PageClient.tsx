@@ -544,7 +544,7 @@ export function PageClient() {
                   }}
                 >
                   <span style={{ color: "#A8C53C" }}>●</span>
-                  <span>10 cinema archetypes</span>
+                  <span>{t(lang, "landing.archetypeCount")}</span>
                   <span style={{ opacity: 0.4 }}>·</span>
                   <a
                     href="/deck"
@@ -692,7 +692,7 @@ export function PageClient() {
               color: "rgba(252,252,253,0.32)",
             }}
           >
-            A small experiment by KinoPark
+            {t(lang, "footer.tagline")}
           </span>
           <div className="flex items-center gap-5">
             <a

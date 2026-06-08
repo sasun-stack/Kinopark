@@ -40,6 +40,16 @@ const COPY: Dict = {
     en: "All Personalities →",
     hy: "Բոլոր կերպարները →",
   },
+  // Caption next to the green dot on the landing footer row.
+  "landing.archetypeCount": {
+    en: "10 cinema archetypes",
+    hy: "10 կինո-կերպար",
+  },
+  // Footer tagline (very bottom of the page).
+  "footer.tagline": {
+    en: "A small experiment by KinoPark",
+    hy: "ԿինոՊարկի փոքրիկ փորձարկում",
+  },
 };
 
 export function t(lang: Lang, key: keyof typeof COPY): string {
