@@ -384,23 +384,20 @@ export function PageClient() {
         }}
       >
         <div
-          className="flex items-center justify-between"
+          className="flex items-center justify-between gap-2 px-3 sm:px-4 py-2"
           style={{
             background: "rgba(20, 20, 20, 0.85)",
             backdropFilter: "blur(12px)",
             border: "1px solid rgba(255,255,255,0.06)",
             borderRadius: "999px",
-            padding: "0.5rem 0.5rem 0.5rem 1.4rem",
           }}
         >
-          {/* Logo — real KinoPark logo (three trees + wordmark).
-              Slightly taller on mobile so it doesn't get lost next to
-              the language switcher + CTA. */}
+          {/* Logo — real KinoPark logo (three trees + wordmark). */}
           <a
             href="https://kinopark.am"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center h-[34px] sm:h-[26px]"
+            className="flex items-center h-[22px] sm:h-[26px] shrink-0"
           >
             <KinoLogo />
           </a>
@@ -413,16 +410,16 @@ export function PageClient() {
           </nav>
 
           {/* Language + CTA */}
-          <div className="flex items-center" style={{ gap: "1rem" }}>
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <LanguageSwitcher />
             <a
               href="https://kinopark.am"
               target="_blank"
               rel="noopener noreferrer"
-              className="kp-pill"
+              className="kp-pill whitespace-nowrap"
               style={{
-                padding: "0.55rem 1.2rem",
-                fontSize: "0.85rem",
+                padding: "0.45rem 0.9rem",
+                fontSize: "0.78rem",
                 boxShadow: "none",
               }}
             >
