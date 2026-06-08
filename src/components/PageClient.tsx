@@ -393,14 +393,16 @@ export function PageClient() {
             padding: "0.5rem 0.5rem 0.5rem 1.4rem",
           }}
         >
-          {/* Logo — real KinoPark logo (three trees + wordmark) */}
+          {/* Logo — real KinoPark logo (three trees + wordmark).
+              Slightly taller on mobile so it doesn't get lost next to
+              the language switcher + CTA. */}
           <a
             href="https://kinopark.am"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center"
+            className="flex items-center h-[34px] sm:h-[26px]"
           >
-            <KinoLogo height={26} />
+            <KinoLogo />
           </a>
 
           {/* Nav links — center */}
