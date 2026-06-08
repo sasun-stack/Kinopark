@@ -17,7 +17,7 @@ const COPY: Dict = {
   },
   // Landing — paragraph under the headline.
   "landing.description": {
-    en: "Enter the phone number you used to register on the KinoPark website and discover your movie personality 🎬",
+    en: "Find out what kind of movie person you are. Enter the phone number you used to register on the KinoPark website and discover your movie personality 🎬",
     hy: "Գրիր այն հեռախոսահամարը, որով գրանցված ես ԿինոՊարկի կայքում, ու իմացիր՝ ինչ կինո-կերպար ես դու 🎬",
   },
 };
