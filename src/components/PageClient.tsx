@@ -9,7 +9,8 @@ import { MovieCardStory } from "@/components/MovieCardStory";
 import { CardBack } from "@/components/CardBack";
 import { CardScene } from "@/components/CardScene";
 import { KinoLogo } from "@/components/KinoLogo";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { LanguageSwitcher, useLang } from "@/components/LanguageSwitcher";
+import { t } from "@/lib/copy";
 import type { Archetype, Badge, CardStats, Reward } from "@/lib/archetypes";
 
 type CardFormat = "horizontal" | "story";
@@ -44,6 +45,7 @@ const ANALYSIS_STEPS = [
 const STEP_DURATION = 750;
 
 export function PageClient() {
+  const lang = useLang();
   // Mount flag — framer-motion's initial styles produce SSR/CSR mismatches
   // (different opacity formatting), and the resulting hydration error breaks
   // event handlers. Rendering nothing on the server side and letting the
@@ -471,22 +473,20 @@ export function PageClient() {
                     fontWeight: 800,
                   }}
                 >
-                  Find your<br />
-                  cinema character
+                  {t(lang, "landing.headline")}
                 </h1>
 
                 <p
                   className="mx-auto"
                   style={{
-                    maxWidth: "30rem",
+                    maxWidth: "32rem",
                     fontSize: "0.95rem",
                     lineHeight: 1.5,
                     color: "rgba(252,252,253,0.6)",
                     marginTop: "1rem",
                   }}
                 >
-                  Drop your KinoPark phone number. We&rsquo;ll read your watch
-                  history and match you to one of ten cinema-character cards.
+                  {t(lang, "landing.description")}
                 </p>
             </div>
           )}
