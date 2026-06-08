@@ -52,29 +52,54 @@ export function CardBack() {
         }}
       />
 
-      {/* Centered three-tree mark + small green eyebrow underneath */}
+      {/* Centered three-tree mark + small green eyebrow underneath.
+          Sizes step up on narrower cards (mobile) so the loading state
+          stays readable when the container is ~340px wide. */}
       <div
-        className="absolute inset-0 flex flex-col items-center justify-center"
-        style={{ gap: "1.6cqw" }}
+        className="absolute inset-0 flex flex-col items-center justify-center kp-cardback-stack"
       >
-        <span style={{ display: "inline-flex", height: "10cqw" }}>
+        <span className="kp-cardback-mark" style={{ display: "inline-flex" }}>
           <KinoLogo markOnly />
         </span>
 
         <div
+          className="kp-cardback-copy"
           style={{
             color: "#A8C53C",
-            fontSize: "2cqw",
             fontWeight: 600,
             letterSpacing: "0.02em",
             textAlign: "center",
-            maxWidth: "70%",
             lineHeight: 1.3,
           }}
         >
           Your tickets tell a story. Let&apos;s read it.
         </div>
       </div>
+
+      <style jsx>{`
+        .kp-cardback-stack {
+          gap: 1.6cqw;
+        }
+        .kp-cardback-mark {
+          height: 10cqw;
+        }
+        .kp-cardback-copy {
+          font-size: 2cqw;
+          max-width: 70%;
+        }
+        @media (max-width: 640px) {
+          .kp-cardback-stack {
+            gap: 3cqw;
+          }
+          .kp-cardback-mark {
+            height: 18cqw;
+          }
+          .kp-cardback-copy {
+            font-size: 4cqw;
+            max-width: 88%;
+          }
+        }
+      `}</style>
     </div>
   );
 }
