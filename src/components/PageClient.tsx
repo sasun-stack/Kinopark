@@ -618,25 +618,28 @@ export function PageClient() {
                 <RevealToggle on={revealCode} onChange={setRevealCode} />
 
                 <div
-                  className={`flex flex-col sm:flex-row gap-3 mt-4 w-full mx-auto ${
+                  className={`grid grid-cols-2 sm:flex sm:flex-row gap-2 sm:gap-3 mt-4 w-full mx-auto ${
                     format === "story" ? "max-w-[380px]" : "max-w-[880px]"
                   }`}
                 >
                   <button
                     onClick={handleShareCard}
                     disabled={sharingCard}
-                    className="kp-pill flex-1"
-                    style={{ padding: "1rem 1.25rem", fontSize: "1rem" }}
+                    className="kp-pill sm:flex-1"
+                    style={{
+                      padding: "0.7rem 0.9rem",
+                      fontSize: "0.9rem",
+                    }}
                   >
                     {sharingCard ? "Sharing…" : "Share"}
                   </button>
                   <button
                     onClick={handleSaveCard}
                     disabled={savingCard}
-                    className="kp-pill flex-1"
+                    className="kp-pill sm:flex-1"
                     style={{
-                      padding: "1rem 1.25rem",
-                      fontSize: "1rem",
+                      padding: "0.7rem 0.9rem",
+                      fontSize: "0.9rem",
                       background: "rgba(255,255,255,0.10)",
                       boxShadow: "none",
                     }}
@@ -645,10 +648,10 @@ export function PageClient() {
                   </button>
                   <button
                     onClick={handleCopyCode}
-                    className="kp-pill flex-1"
+                    className="kp-pill sm:flex-1"
                     style={{
-                      padding: "1rem 1.25rem",
-                      fontSize: "1rem",
+                      padding: "0.7rem 0.9rem",
+                      fontSize: "0.9rem",
                       background: "rgba(255,255,255,0.10)",
                       boxShadow: "none",
                     }}
@@ -657,8 +660,8 @@ export function PageClient() {
                   </button>
                   <button
                     onClick={handleReset}
-                    className="kp-pill-ghost flex-1"
-                    style={{ padding: "1rem 1.25rem", fontSize: "1rem" }}
+                    className="kp-pill-ghost sm:flex-1"
+                    style={{ padding: "0.7rem 0.9rem", fontSize: "0.9rem" }}
                   >
                     Read Again
                   </button>
