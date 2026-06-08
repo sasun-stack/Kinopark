@@ -617,19 +617,26 @@ export function PageClient() {
 
                 <RevealToggle on={revealCode} onChange={setRevealCode} />
 
-                <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full max-w-[560px]">
+                <div
+                  className={`flex flex-col sm:flex-row gap-3 mt-4 w-full mx-auto ${
+                    format === "story" ? "max-w-[380px]" : "max-w-[880px]"
+                  }`}
+                >
                   <button
                     onClick={handleShareCard}
                     disabled={sharingCard}
                     className="kp-pill flex-1"
+                    style={{ padding: "1rem 1.25rem", fontSize: "1rem" }}
                   >
-                    {sharingCard ? "Sharing…" : "Share Story"}
+                    {sharingCard ? "Sharing…" : "Share"}
                   </button>
                   <button
                     onClick={handleSaveCard}
                     disabled={savingCard}
                     className="kp-pill flex-1"
                     style={{
+                      padding: "1rem 1.25rem",
+                      fontSize: "1rem",
                       background: "rgba(255,255,255,0.10)",
                       boxShadow: "none",
                     }}
@@ -640,13 +647,19 @@ export function PageClient() {
                     onClick={handleCopyCode}
                     className="kp-pill flex-1"
                     style={{
+                      padding: "1rem 1.25rem",
+                      fontSize: "1rem",
                       background: "rgba(255,255,255,0.10)",
                       boxShadow: "none",
                     }}
                   >
                     {copyState === "copied" ? "✓ Copied" : "Copy Code"}
                   </button>
-                  <button onClick={handleReset} className="kp-pill-ghost flex-1">
+                  <button
+                    onClick={handleReset}
+                    className="kp-pill-ghost flex-1"
+                    style={{ padding: "1rem 1.25rem", fontSize: "1rem" }}
+                  >
                     Read Again
                   </button>
                 </div>
