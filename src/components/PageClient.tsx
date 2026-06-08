@@ -449,27 +449,11 @@ export function PageClient() {
                 opacity: stage === "landing" ? 1 : 0,
               }}
             >
-                {/* Orange chip — matches "+ Buy Tickets" pill on kinopark.am */}
-                <a
-                  className="kp-pill"
-                  href="#phone"
-                  style={{
-                    fontSize: "0.78rem",
-                    padding: "0.5rem 1.1rem",
-                    fontWeight: 500,
-                    boxShadow: "0 0 36px rgba(202,76,22,0.30)",
-                  }}
-                >
-                  <span style={{ fontSize: "1.1em", lineHeight: 1 }}>+</span>
-                  <span>Cinema Identity</span>
-                </a>
-
-                <h1
+<h1
                   className="kp-display"
                   style={{
                     fontSize: "clamp(2.4rem, 6vw, 4.6rem)",
                     color: "#FCFCFD",
-                    marginTop: "1.4rem",
                     fontWeight: 800,
                   }}
                 >
