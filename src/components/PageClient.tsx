@@ -65,6 +65,7 @@ export function PageClient() {
   const [shaking, setShaking] = useState(false);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [savingCard, setSavingCard] = useState(false);
+  const [sharingCard, setSharingCard] = useState(false);
   const [format, setFormat] = useState<CardFormat>("horizontal");
 
   const apiPromiseRef = useRef<Promise<ApiResponse> | null>(null);
@@ -235,6 +236,70 @@ export function PageClient() {
       setSavingCard(false);
     }
   }, [data, format, savingCard]);
+
+  // Share the visible card as a PNG via the Web Share API. On mobile this
+  // opens the native share sheet, where the user can pick Instagram → Stories
+  // (websites cannot post to IG Stories directly — this is as close as the
+  // platform allows). Falls back to a plain download when sharing files isn't
+  // supported (most desktop browsers).
+  const handleShareCard = useCallback(async () => {
+    if (!data || sharingCard) return;
+    const node =
+      format === "story" ? storyCardRef.current : horizontalCardRef.current;
+    if (!node) return;
+    setSharingCard(true);
+    try {
+      if (typeof document !== "undefined" && "fonts" in document && document.fonts) {
+        await document.fonts.ready;
+      }
+      const { toBlob } = await import("html-to-image");
+      const blob = await toBlob(node, {
+        cacheBust: true,
+        pixelRatio: 2,
+        skipFonts: false,
+        backgroundColor: data.archetype.bg,
+      });
+      if (!blob) throw new Error("Could not render card image");
+
+      const file = new File(
+        [blob],
+        `kinopark-${data.archetype.id}-${data.serial}-${format}.png`,
+        { type: "image/png" },
+      );
+
+      const nav = navigator as Navigator & {
+        canShare?: (data?: ShareData) => boolean;
+      };
+      const canShareFiles =
+        typeof nav.share === "function" &&
+        typeof nav.canShare === "function" &&
+        nav.canShare({ files: [file] });
+
+      if (canShareFiles) {
+        await nav.share({
+          files: [file],
+          title: "My KinoPark Cinema Identity",
+          text: `I'm ${data.archetype.title} — find your cinema character at kinopark-woad.vercel.app`,
+        });
+      } else {
+        // Desktop / unsupported: download instead so the user still gets the
+        // image to post manually.
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.download = file.name;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (e) {
+      // AbortError = user dismissed the share sheet; not an error worth logging.
+      if ((e as Error)?.name !== "AbortError") {
+        console.error("Share Card failed:", e);
+      }
+    } finally {
+      setSharingCard(false);
+    }
+  }, [data, format, sharingCard]);
 
   // Copy the promocode (the code is the redeemable thing). Falls back
   // silently if clipboard API is blocked.
@@ -554,9 +619,20 @@ export function PageClient() {
 
                 <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full max-w-[560px]">
                   <button
+                    onClick={handleShareCard}
+                    disabled={sharingCard}
+                    className="kp-pill flex-1"
+                  >
+                    {sharingCard ? "Sharing…" : "Share Story"}
+                  </button>
+                  <button
                     onClick={handleSaveCard}
                     disabled={savingCard}
                     className="kp-pill flex-1"
+                    style={{
+                      background: "rgba(255,255,255,0.10)",
+                      boxShadow: "none",
+                    }}
                   >
                     {savingCard ? "Saving…" : "Save Card"}
                   </button>
