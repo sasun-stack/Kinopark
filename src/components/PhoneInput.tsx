@@ -34,9 +34,9 @@ export function PhoneInput({ onSubmit, loading, prefill }: Props) {
       onSubmit={handleSubmit}
       className="w-full max-w-xl flex flex-col"
       style={{
-        gap: "0.5rem",
+        gap: "0.75rem",
         padding: "0.4rem",
-        borderRadius: "999px",
+        borderRadius: "28px",
         background: "rgba(255, 255, 255, 0.04)",
         border: focused
           ? "1px solid rgba(202, 76, 22, 0.45)"
@@ -45,8 +45,9 @@ export function PhoneInput({ onSubmit, loading, prefill }: Props) {
         transition: "border-color 200ms ease",
       }}
     >
-      <div className="flex items-center" style={{ gap: "0.25rem" }}>
-        {/* Country code chip */}
+      {/* Input row — country chip + number. Stacks above the CTA on mobile,
+          inline with it on sm+. */}
+      <div className="flex flex-col sm:flex-row sm:items-center" style={{ gap: "0.25rem" }}>
         <div
           className="flex items-center shrink-0"
           style={{
@@ -61,7 +62,10 @@ export function PhoneInput({ onSubmit, loading, prefill }: Props) {
         >
           <span aria-hidden style={{ fontSize: "1rem" }}>🇦🇲</span>
           <span>+374</span>
-          <span style={{ width: "1px", height: "20px", background: "rgba(255, 255, 255, 0.12)" }} />
+          <span
+            className="hidden sm:inline-block"
+            style={{ width: "1px", height: "20px", background: "rgba(255, 255, 255, 0.12)" }}
+          />
         </div>
 
         <input
@@ -81,10 +85,10 @@ export function PhoneInput({ onSubmit, loading, prefill }: Props) {
           }}
           placeholder="77 12 34 56"
           disabled={loading}
-          className="flex-1 bg-transparent outline-none disabled:opacity-50"
+          className="flex-1 bg-transparent outline-none disabled:opacity-50 w-full"
           style={{
             fontSize: "1rem",
-            padding: "0.95rem 0.4rem",
+            padding: "0.95rem 1.25rem",
             color: "#FCFCFD",
             fontWeight: 500,
             letterSpacing: "0.04em",
@@ -94,8 +98,8 @@ export function PhoneInput({ onSubmit, loading, prefill }: Props) {
         <button
           type="submit"
           disabled={loading || !isValid}
-          className="kp-pill shrink-0"
-          style={{ paddingInline: "1.6rem" }}
+          className="kp-pill w-full sm:w-auto sm:shrink-0"
+          style={{ paddingInline: "1.6rem", paddingBlock: "0.85rem" }}
         >
           {loading ? "Reading…" : "Find My Character"}
         </button>
