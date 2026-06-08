@@ -567,7 +567,7 @@ export function PageClient() {
                     className="hover:text-[#FCFCFD] transition-colors"
                     style={{ color: "rgba(202,76,22,0.85)", fontWeight: 500 }}
                   >
-                    Browse the deck →
+                    {t(lang, "landing.browse")}
                   </a>
                 </div>
               </div>

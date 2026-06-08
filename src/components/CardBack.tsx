@@ -1,12 +1,15 @@
 "use client";
 
 import { KinoLogo } from "@/components/KinoLogo";
+import { useLang } from "@/components/LanguageSwitcher";
+import { t } from "@/lib/copy";
 
 /**
  * Card back — KinoPark dark base + atmospheric corner glows + the real
  * three-tree mark centred. Shown before the reveal flips to the front.
  */
 export function CardBack() {
+  const lang = useLang();
   return (
     <div
       className="relative w-full h-full overflow-hidden select-none"
@@ -72,7 +75,7 @@ export function CardBack() {
             lineHeight: 1.3,
           }}
         >
-          Your tickets tell a story. Let&apos;s read it.
+          {t(lang, "cardback.copy")}
         </div>
       </div>
 

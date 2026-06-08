@@ -20,6 +20,26 @@ const COPY: Dict = {
     en: "Find out what kind of movie person you are. Enter the phone number you used to register on the KinoPark website and discover your movie personality 🎬",
     hy: "Գրիր այն հեռախոսահամարը, որով գրանցված ես ԿինոՊարկի կայքում, ու իմացիր՝ ինչ կինո-կերպար ես դու 🎬",
   },
+  // Card back — loading line shown before the reveal flip.
+  "cardback.copy": {
+    en: "Your movie story is already written",
+    hy: "Քո կինո-պատմությունն արդեն գրված է",
+  },
+  // Phone input submit button (idle state).
+  "phoneInput.submit": {
+    en: "Reveal My Personality",
+    hy: "Բացահայտել իմ կերպարը",
+  },
+  // Phone input submit button (loading state).
+  "phoneInput.submitLoading": {
+    en: "Reading…",
+    hy: "Կարդում ենք…",
+  },
+  // Footer link below the form — leads to /deck.
+  "landing.browse": {
+    en: "All Personalities →",
+    hy: "Բոլոր կերպարները →",
+  },
 };
 
 export function t(lang: Lang, key: keyof typeof COPY): string {

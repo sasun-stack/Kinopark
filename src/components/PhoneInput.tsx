@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useLang } from "@/components/LanguageSwitcher";
+import { t } from "@/lib/copy";
 
 interface Props {
   onSubmit: (phone: string) => void;
@@ -14,6 +16,7 @@ interface Props {
  * the site's button system exactly (40px radius, #CA4C16, white text).
  */
 export function PhoneInput({ onSubmit, loading, prefill }: Props) {
+  const lang = useLang();
   const [phone, setPhone] = useState(prefill ?? "");
   const [touched, setTouched] = useState(false);
   const [focused, setFocused] = useState(false);
@@ -102,7 +105,7 @@ export function PhoneInput({ onSubmit, loading, prefill }: Props) {
           className="kp-pill w-full sm:w-auto sm:shrink-0"
           style={{ paddingInline: "1.6rem", paddingBlock: "0.85rem" }}
         >
-          {loading ? "Reading…" : "Find My Character"}
+          {loading ? t(lang, "phoneInput.submitLoading") : t(lang, "phoneInput.submit")}
         </button>
       </div>
 
