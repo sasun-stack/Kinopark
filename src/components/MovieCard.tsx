@@ -55,6 +55,11 @@ export function MovieCard({
   const titleDivisor = characterImage ? 95 : 125;
   const titleSize = `${Math.max(7, Math.min(titleCap, titleDivisor / titleLen))}cqw`;
 
+  // Explicit one-word-per-line break. Width-based wrapping reflows through
+  // html-to-image (container-query units), clipping titles on the exported
+  // PNG; fixed breaks keep preview and download identical.
+  const titleWords = title.split(" ");
+
   return (
     <div
       className="relative w-full h-full overflow-hidden select-none"
@@ -143,9 +148,14 @@ export function MovieCard({
             color: ink,
             fontWeight: 800,
             margin: 0,
+            lineHeight: 0.95,
           }}
         >
-          {title}
+          {titleWords.map((word, i) => (
+            <span key={i} style={{ display: "block" }}>
+              {word}
+            </span>
+          ))}
         </h2>
 
         <div
