@@ -55,6 +55,11 @@ export function MovieCardStory({
   const titleLen = Math.max(title.length, 1);
   const titleSize = `${Math.max(8, Math.min(13, 140 / titleLen))}cqw`;
 
+  // Render each word on its own line. Width-based wrapping is unreliable
+  // through html-to-image (container-query units reflow on capture), so we
+  // make the line breaks explicit — preview and exported PNG match exactly.
+  const titleWords = title.split(" ");
+
   return (
     <div
       className="relative w-full h-full overflow-hidden select-none"
@@ -184,7 +189,11 @@ export function MovieCardStory({
               lineHeight: 0.95,
             }}
           >
-            {title}
+            {titleWords.map((word, i) => (
+              <span key={i} style={{ display: "block" }}>
+                {word}
+              </span>
+            ))}
           </h2>
           <div
             style={{
