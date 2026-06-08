@@ -45,55 +45,56 @@ export function PhoneInput({ onSubmit, loading, prefill }: Props) {
         transition: "border-color 200ms ease",
       }}
     >
-      {/* Input row — country chip + number. Stacks above the CTA on mobile,
-          inline with it on sm+. */}
-      <div className="flex flex-col sm:flex-row sm:items-center" style={{ gap: "0.25rem" }}>
-        <div
-          className="flex items-center shrink-0"
-          style={{
-            paddingLeft: "1.25rem",
-            paddingRight: "0.85rem",
-            color: "rgba(252, 252, 253, 0.85)",
-            fontSize: "0.95rem",
-            fontWeight: 500,
-            letterSpacing: "0.02em",
-            gap: "0.5rem",
-          }}
-        >
-          <span aria-hidden style={{ fontSize: "1rem" }}>🇦🇲</span>
-          <span>+374</span>
-          <span
-            className="hidden sm:inline-block"
-            style={{ width: "1px", height: "20px", background: "rgba(255, 255, 255, 0.12)" }}
+      {/* Input row — country chip + number always inline. The CTA flows
+          beside it on sm+ and drops to a full-width row below on mobile. */}
+      <div className="flex flex-col sm:flex-row sm:items-center" style={{ gap: "0.5rem" }}>
+        <div className="flex items-center flex-1" style={{ gap: "0.25rem" }}>
+          <div
+            className="flex items-center shrink-0"
+            style={{
+              paddingLeft: "1.25rem",
+              paddingRight: "0.85rem",
+              color: "rgba(252, 252, 253, 0.85)",
+              fontSize: "0.95rem",
+              fontWeight: 500,
+              letterSpacing: "0.02em",
+              gap: "0.5rem",
+            }}
+          >
+            <span aria-hidden style={{ fontSize: "1rem" }}>🇦🇲</span>
+            <span>+374</span>
+            <span
+              style={{ width: "1px", height: "20px", background: "rgba(255, 255, 255, 0.12)" }}
+            />
+          </div>
+
+          <input
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel-national"
+            value={formatted}
+            onChange={(e) => {
+              const next = e.target.value.replace(/\D/g, "").slice(0, 8);
+              setPhone(next);
+              setTouched(false);
+            }}
+            onFocus={() => setFocused(true)}
+            onBlur={() => {
+              setFocused(false);
+              setTouched(true);
+            }}
+            placeholder="77 12 34 56"
+            disabled={loading}
+            className="flex-1 min-w-0 bg-transparent outline-none disabled:opacity-50"
+            style={{
+              fontSize: "1rem",
+              padding: "0.95rem 0.4rem",
+              color: "#FCFCFD",
+              fontWeight: 500,
+              letterSpacing: "0.04em",
+            }}
           />
         </div>
-
-        <input
-          type="tel"
-          inputMode="numeric"
-          autoComplete="tel-national"
-          value={formatted}
-          onChange={(e) => {
-            const next = e.target.value.replace(/\D/g, "").slice(0, 8);
-            setPhone(next);
-            setTouched(false);
-          }}
-          onFocus={() => setFocused(true)}
-          onBlur={() => {
-            setFocused(false);
-            setTouched(true);
-          }}
-          placeholder="77 12 34 56"
-          disabled={loading}
-          className="flex-1 bg-transparent outline-none disabled:opacity-50 w-full"
-          style={{
-            fontSize: "1rem",
-            padding: "0.95rem 1.25rem",
-            color: "#FCFCFD",
-            fontWeight: 500,
-            letterSpacing: "0.04em",
-          }}
-        />
 
         <button
           type="submit"
