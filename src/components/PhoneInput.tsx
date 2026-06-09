@@ -35,7 +35,7 @@ export function PhoneInput({ onSubmit, loading, prefill }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-xl flex flex-col"
+      className="w-full max-w-xl flex flex-col overflow-hidden"
       style={{
         gap: "0.75rem",
         padding: "0.4rem",
@@ -102,8 +102,15 @@ export function PhoneInput({ onSubmit, loading, prefill }: Props) {
         <button
           type="submit"
           disabled={loading || !isValid}
-          className="kp-pill w-full sm:w-auto sm:shrink-0"
-          style={{ paddingInline: "1.6rem", paddingBlock: "0.85rem" }}
+          className="kp-pill w-full sm:w-auto sm:shrink-0 whitespace-nowrap"
+          style={{
+            paddingInline: lang === "hy" ? "1.2rem" : "1.6rem",
+            paddingBlock: "0.85rem",
+            fontSize: lang === "hy" ? "0.85rem" : "0.95rem",
+            // Tone down the 50px halo on this input pill — it was bleeding
+            // past the form's rounded edge, especially for the longer HY copy.
+            boxShadow: "0 0 18px rgba(202, 76, 22, 0.30)",
+          }}
         >
           {loading ? t(lang, "phoneInput.submitLoading") : t(lang, "phoneInput.submit")}
         </button>
