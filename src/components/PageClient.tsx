@@ -460,9 +460,15 @@ export function PageClient() {
                         : "clamp(2.4rem, 6vw, 4.6rem)",
                     color: "#FCFCFD",
                     fontWeight: 800,
+                    lineHeight: 1.05,
                   }}
                 >
-                  {t(lang, "landing.headline")}
+                  {t(lang, "landing.headline").split("\n").map((line, i, arr) => (
+                    <span key={i}>
+                      {line}
+                      {i < arr.length - 1 && <br />}
+                    </span>
+                  ))}
                 </h1>
 
                 <p

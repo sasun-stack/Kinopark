@@ -9,11 +9,11 @@ import type { Lang } from "@/components/LanguageSwitcher";
 type Dict = Record<string, { en: string; hy: string }>;
 
 const COPY: Dict = {
-  // Landing — main headline. Rendered as one block; <br /> handled at the
-  // call site if needed.
+  // Landing — main headline. '\n' marks an explicit line break the
+  // renderer turns into <br />.
   "landing.headline": {
-    en: "Find Your Movie Personality",
-    hy: "Բացահայտիր՝ ինչ կինո-կերպար ես դու",
+    en: "Find Your\nMovie Personality",
+    hy: "Բացահայտիր՝ ինչ\nկինո-կերպար ես դու",
   },
   // Landing — paragraph under the headline.
   "landing.description": {
