@@ -598,7 +598,7 @@ export function PageClient() {
             {stage === "result" && data && (
               <div className="flex flex-col items-center w-full mx-auto px-6 fade-in">
                 <p
-                  className={`text-center text-[0.82rem] sm:text-base w-full mx-auto ${
+                  className={`text-center text-[12px] sm:text-[14px] w-full mx-auto ${
                     format === "story" ? "max-w-[380px]" : "max-w-[880px]"
                   }`}
                   style={{
