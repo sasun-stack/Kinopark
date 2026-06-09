@@ -25,6 +25,25 @@
   --font-body: var(--font-body);
 }
 
+/*
+ * Defeat browser autofill styling on dark-theme inputs.
+ * Chrome / Edge fill the field with a light-blue background and dark
+ * text, which clashes with the KP palette. The trick: paint the bg with
+ * a huge inset shadow (browsers respect this even when they refuse to
+ * set bg) and override text-fill-color, which controls the autofill
+ * text colour separately from `color`.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #FCFCFD !important;
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  box-shadow: 0 0 0 1000px transparent inset !important;
+  caret-color: #FCFCFD;
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+
 html, body {
   background: var(--color-background);
   color: var(--color-foreground);
