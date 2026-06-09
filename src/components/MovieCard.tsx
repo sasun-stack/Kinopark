@@ -141,11 +141,24 @@ export function MovieCard({
         <BadgePill label={badge.label} />
       </div>
 
-      {/* ── Title block — huge title + small genre stamp ───────────── */}
+      {/* ── Title block — eyebrow + huge title + small genre stamp ───── */}
       <div
         className="absolute"
         style={{ left: "4cqw", right: contentRight, top: "22%" }}
       >
+        <div
+          style={{
+            color: accent,
+            fontSize: "1.15cqw",
+            letterSpacing: "0.24em",
+            textTransform: "uppercase",
+            fontWeight: 600,
+            marginBottom: "1cqw",
+          }}
+        >
+          Cinema Identity
+        </div>
+
         <h2
           className="kp-display"
           style={{
