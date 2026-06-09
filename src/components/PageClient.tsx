@@ -452,7 +452,12 @@ export function PageClient() {
 <h1
                   className="kp-display"
                   style={{
-                    fontSize: "clamp(2.4rem, 6vw, 4.6rem)",
+                    // HY headline is longer than EN; pull the upper clamp
+                    // back so it doesn't dominate on desktop.
+                    fontSize:
+                      lang === "hy"
+                        ? "clamp(1.9rem, 4.2vw, 3.2rem)"
+                        : "clamp(2.4rem, 6vw, 4.6rem)",
                     color: "#FCFCFD",
                     fontWeight: 800,
                   }}
