@@ -11,6 +11,7 @@ import { CardScene } from "@/components/CardScene";
 import { KinoLogo } from "@/components/KinoLogo";
 import { LanguageSwitcher, useLang } from "@/components/LanguageSwitcher";
 import { t } from "@/lib/copy";
+import { getArchetypeMotivation } from "@/lib/archetypeMotivations";
 import type { Archetype, Badge, CardStats, Reward } from "@/lib/archetypes";
 
 type CardFormat = "horizontal" | "story";
@@ -605,7 +606,7 @@ export function PageClient() {
                     fontWeight: 400,
                   }}
                 >
-                  {data.motivation}
+                  {getArchetypeMotivation(data.archetype.id, lang) ?? data.motivation}
                 </p>
 
                 <RevealToggle on={revealCode} onChange={setRevealCode} />
