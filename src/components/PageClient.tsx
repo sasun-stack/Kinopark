@@ -613,8 +613,10 @@ export function PageClient() {
                 <RevealToggle on={revealCode} onChange={setRevealCode} />
 
                 <div
-                  className={`grid grid-cols-2 sm:flex sm:flex-row gap-2 sm:gap-3 mt-4 w-full mx-auto ${
-                    format === "story" ? "max-w-[380px]" : "max-w-[880px]"
+                  className={`gap-2 sm:gap-3 mt-4 w-full mx-auto ${
+                    format === "story"
+                      ? "grid grid-cols-2 max-w-[380px]"
+                      : "grid grid-cols-2 sm:flex sm:flex-row max-w-[880px]"
                   }`}
                 >
                   <button
