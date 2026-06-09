@@ -55,10 +55,15 @@ export function MovieCard({
   const titleDivisor = characterImage ? 95 : 125;
   const titleSize = `${Math.max(7, Math.min(titleCap, titleDivisor / titleLen))}cqw`;
 
-  // Explicit one-word-per-line break. Width-based wrapping reflows through
-  // html-to-image (container-query units), clipping titles on the exported
-  // PNG; fixed breaks keep preview and download identical.
+  // Explicit line breaks. Width-based wrapping reflows through html-to-image
+  // (container-query units), clipping titles on export. For 1-2 word titles
+  // one word per line; for 3-word ones (THE INDIE SOUL) keep it to 2 lines:
+  // first word, then the rest joined.
   const titleWords = title.split(" ");
+  const titleLines =
+    titleWords.length >= 3
+      ? [titleWords[0], titleWords.slice(1).join(" ")]
+      : titleWords;
 
   return (
     <div
@@ -151,9 +156,9 @@ export function MovieCard({
             lineHeight: 0.95,
           }}
         >
-          {titleWords.map((word, i) => (
+          {titleLines.map((line, i) => (
             <span key={i} style={{ display: "block" }}>
-              {word}
+              {line}
             </span>
           ))}
         </h2>

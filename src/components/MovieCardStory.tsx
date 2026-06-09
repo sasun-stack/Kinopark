@@ -55,10 +55,15 @@ export function MovieCardStory({
   const titleLen = Math.max(title.length, 1);
   const titleSize = `${Math.max(8, Math.min(13, 140 / titleLen))}cqw`;
 
-  // Render each word on its own line. Width-based wrapping is unreliable
-  // through html-to-image (container-query units reflow on capture), so we
-  // make the line breaks explicit — preview and exported PNG match exactly.
+  // Explicit line breaks. Width-based wrapping is unreliable through
+  // html-to-image (container-query units reflow on capture). For 1-2 word
+  // titles render one per line; for 3-word ones cap at two lines: first
+  // word, then the rest joined (e.g. THE / INDIE SOUL).
   const titleWords = title.split(" ");
+  const titleLines =
+    titleWords.length >= 3
+      ? [titleWords[0], titleWords.slice(1).join(" ")]
+      : titleWords;
 
   return (
     <div
@@ -189,9 +194,9 @@ export function MovieCardStory({
               lineHeight: 0.95,
             }}
           >
-            {titleWords.map((word, i) => (
+            {titleLines.map((line, i) => (
               <span key={i} style={{ display: "block" }}>
-                {word}
+                {line}
               </span>
             ))}
           </h2>
