@@ -219,7 +219,10 @@ export function MovieCard({
         className="absolute flex items-center"
         style={{
           left: "4cqw",
-          right: contentRight,
+          // The 36cqw text column accounts for the halo, but the character
+          // cut-out itself only reaches ~26cqw in — let the insight run up
+          // to the figure so it fits on a single line.
+          right: characterImage ? "26cqw" : contentRight,
           bottom: "11cqw",
           gap: "1.2cqw",
           fontSize: "1.7cqw",
