@@ -36,7 +36,6 @@ export function MovieCard({
   badge,
   stats,
   insight,
-  serial,
   promocode,
   reward,
   revealCode = false,
@@ -316,7 +315,7 @@ export function MovieCard({
           fontWeight: 600,
         }}
       >
-        <span>N° {serial} / 2026</span>
+        <span>{formatCardDate()}</span>
         <span>KINOPARK.AM</span>
       </div>
     </div>
@@ -388,6 +387,16 @@ function BadgePill({ label }: { label: string }) {
       <span>{label}</span>
     </span>
   );
+}
+
+/* ── Date helper ────────────────────────────────────────────────────── */
+
+/** The day this card was generated, as DD.MM.YYYY. */
+function formatCardDate(): string {
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  return `${dd}.${mm}.${d.getFullYear()}`;
 }
 
 /* ── Colour helpers ─────────────────────────────────────────────────── */
