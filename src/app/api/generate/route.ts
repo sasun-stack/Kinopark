@@ -95,7 +95,7 @@ function buildEmptyResponse(phone: string): ApiResponse {
     bg: "#141418",
     ink: "#FCFCFD",
     accent: "#CA4C16",
-    signatureFilms: [],
+    signatureFilms: ["Your First Film", "The One That Hooks You", "The One You'll Tell Everyone About"],
     mood: ["Curious", "New", "Awaited"],
     defaultRewardId: "welcome",
   };
