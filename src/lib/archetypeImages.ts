@@ -16,6 +16,7 @@ const ARCHETYPE_IMAGES: Record<string, string> = {
   "hopeless-romantic": "/archetypes/hopeless-romantic.png",
   "comedy-captain": "/archetypes/comedy-captain.png",
   "indie-soul": "/archetypes/indie-soul.png",
+  "mystery-guest": "/archetypes/mystery-guest.png",
 };
 
 export function getArchetypeImage(id: string): string | null {
