@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ARCHETYPES,
@@ -9,8 +11,11 @@ import {
 } from "@/lib/archetypes";
 import { MovieCard } from "@/components/MovieCard";
 import { KinoLogo } from "@/components/KinoLogo";
+import { useLang } from "@/components/LanguageSwitcher";
+import { t } from "@/lib/copy";
 
 export default function DeckPage() {
+  const lang = useLang();
   return (
     <div style={{ background: "#0A0A0A", minHeight: "100vh", color: "#FCFCFD" }}>
       {/* Atmospheric corner glow — same as landing */}
@@ -64,9 +69,9 @@ export default function DeckPage() {
               fontWeight: 800,
             }}
           >
-            Ten cinema-goers.
+            {t(lang, "deck.headline1")}
             <br />
-            <span style={{ color: "#CA4C16" }}>One of them is you.</span>
+            <span style={{ color: "#CA4C16" }}>{t(lang, "deck.headline2")}</span>
           </h1>
         </div>
 

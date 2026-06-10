@@ -50,6 +50,15 @@ const COPY: Dict = {
     en: "A small experiment by KinoPark",
     hy: "ԿինոՊարկի փոքրիկ փորձարկում",
   },
+  // Deck page headline, line 1 (plain) and line 2 (orange highlight).
+  "deck.headline1": {
+    en: "Ten cinema-goers.",
+    hy: "Տասը կինոսեր։",
+  },
+  "deck.headline2": {
+    en: "One of them is you.",
+    hy: "Նրանցից մեկը դու ես։",
+  },
 };
 
 export function t(lang: Lang, key: keyof typeof COPY): string {
