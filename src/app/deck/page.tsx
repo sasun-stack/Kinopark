@@ -57,22 +57,11 @@ export default function DeckPage() {
 
       <main className="relative z-10 px-6 sm:px-12 pb-20">
         <div className="text-center" style={{ paddingBlock: "3.5rem 2.5rem" }}>
-          <span
-            className="kp-pill"
-            style={{
-              fontSize: "0.78rem",
-              padding: "0.4rem 1rem",
-              boxShadow: "0 0 36px rgba(202,76,22,0.30)",
-            }}
-          >
-            The Full Deck
-          </span>
           <h1
             className="kp-display"
             style={{
               fontSize: "clamp(2.4rem, 5.6vw, 4.4rem)",
               fontWeight: 800,
-              marginTop: "1.4rem",
             }}
           >
             Ten cinema-goers.
