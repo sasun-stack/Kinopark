@@ -78,6 +78,54 @@ function isValidPhone(p: string): boolean {
   return /^\+374\d{8}$/.test(p);
 }
 
+/**
+ * Empty-state card. Returned when the phone has no purchase history (new
+ * customer, or booked under a different number). A friendly "we don't know
+ * you yet" card that invites a first visit instead of a random archetype.
+ */
+function buildEmptyResponse(phone: string): ApiResponse {
+  const archetype: Archetype = {
+    id: "mystery-guest",
+    title: "Mystery Guest",
+    titleHy: "Առեղծվածային հյուր",
+    tagline: "Your story hasn't started yet.",
+    description:
+      "No tickets on record — but every great cinema story starts with a first one.",
+    genre: "Unwritten",
+    bg: "#141418",
+    ink: "#FCFCFD",
+    accent: "#CA4C16",
+    signatureFilms: [],
+    mood: ["Curious", "New", "Awaited"],
+    defaultRewardId: "welcome",
+  };
+
+  const badge: Badge = {
+    id: "new-here",
+    label: "New Here",
+    description: "We haven't met at the movies yet.",
+  };
+
+  const reward: Reward = {
+    id: "welcome",
+    label: "20% Off Your First Ticket",
+    flair: "The first one's on us — come say hi.",
+    redemption: "Show this code at the box office on your first visit.",
+  };
+
+  return {
+    archetype,
+    badge,
+    stats: { moviesWatched: 0, premiumPct: 0, topGenrePct: 0 },
+    insight: "No tickets yet — your first chapter is still unwritten.",
+    serial: generateSerial(phone),
+    motivation:
+      "We couldn't find a movie history for this number yet. Maybe you're new, or you booked under a different one. Either way — your first chapter is waiting at KinoPark 🍿",
+    promocode: "KP-WELCOME",
+    reward,
+  };
+}
+
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const phone = url.searchParams.get("phone")?.trim() ?? "";
@@ -95,11 +143,26 @@ export async function GET(req: Request) {
 
   await new Promise((r) => setTimeout(r, 300));
 
+  // Preview the empty-state card directly with ?archetype=mystery-guest.
+  if (archetypeOverride === "mystery-guest") {
+    return NextResponse.json(buildEmptyResponse(phone), {
+      headers: { "Cache-Control": "no-store" },
+    });
+  }
+
   // API expects digits only: "37491240225"
   const phoneDigits = phone.replace(/^\+/, "");
   const history = await getPurchaseHistory(phoneDigits);
   const items = history?.Data?.Items ?? [];
   const hasRealData = !history?.HasError && items.length > 0;
+
+  // No purchase history and no forced archetype → show the empty-state card
+  // instead of a random archetype.
+  if (!hasRealData && !archetypeOverride) {
+    return NextResponse.json(buildEmptyResponse(phone), {
+      headers: { "Cache-Control": "no-store" },
+    });
+  }
 
   // ---- ARCHETYPE ---- (still pseudo-random until we wire in genres)
   const forcedArch = archetypeOverride
