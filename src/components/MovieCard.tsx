@@ -48,13 +48,6 @@ export function MovieCard({
   const characterImage = getArchetypeImage(archetype.id);
   const contentRight = characterImage ? "36cqw" : "4cqw";
 
-  // Title scaling — keep title to one line, leave room for stats below.
-  // Narrower text column when a character sits on the right.
-  const titleLen = Math.max(title.length, 1);
-  const titleCap = characterImage ? 9 : 11.5;
-  const titleDivisor = characterImage ? 95 : 125;
-  const titleSize = `${Math.max(7, Math.min(titleCap, titleDivisor / titleLen))}cqw`;
-
   // Explicit line breaks. Width-based wrapping reflows through html-to-image
   // (container-query units), clipping titles on export. For 1-2 word titles
   // one word per line; for 3-word ones (THE INDIE SOUL) keep it to 2 lines:
@@ -64,6 +57,22 @@ export function MovieCard({
     titleWords.length >= 3
       ? [titleWords[0], titleWords.slice(1).join(" ")]
       : titleWords;
+
+  // Title scaling. Horizontal fit is driven by the longest LINE (titles
+  // render one word per line), not the full title length. The cap keeps the
+  // two-line block + eyebrow + genre stamp clear of the stats row at the
+  // bottom — at >7cqw two lines collide with the stats on short titles.
+  const longestLine = Math.max(...titleLines.map((l) => l.length), 1);
+  const multiline = titleLines.length > 1;
+  const titleCap = multiline
+    ? characterImage
+      ? 7
+      : 8.5
+    : characterImage
+      ? 9
+      : 11.5;
+  const titleDivisor = characterImage ? 95 : 125;
+  const titleSize = `${Math.max(4.5, Math.min(titleCap, titleDivisor / longestLine))}cqw`;
 
   return (
     <div
