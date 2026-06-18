@@ -17,6 +17,7 @@ import {
   getPurchaseHistory,
   analyzeTransactions,
   pickBadgeFromInsights,
+  classifyArchetypeByGenre,
 } from "@/lib/kinoparkApi";
 
 export type ApiResponse = {
@@ -163,11 +164,18 @@ export async function GET(req: Request) {
     });
   }
 
-  // ---- ARCHETYPE ---- (still pseudo-random until we wire in genres)
+  // ---- ARCHETYPE ----
+  // Prefer a genre-derived archetype when the purchase rows carry genres.
+  // classifyArchetypeByGenre returns null until the backend adds the field,
+  // at which point real watch-history genres drive the result automatically.
   const forcedArch = archetypeOverride
     ? ARCHETYPES.find((a) => a.id === archetypeOverride)
     : null;
-  const archetype: Archetype = forcedArch ?? pickRandomArchetype(phone);
+  const genreMatch = hasRealData ? classifyArchetypeByGenre(items) : null;
+  const genreArch = genreMatch
+    ? ARCHETYPES.find((a) => a.id === genreMatch.archetypeId)
+    : null;
+  const archetype: Archetype = forcedArch ?? genreArch ?? pickRandomArchetype(phone);
 
   // ---- BADGE ----
   let badge: Badge;
@@ -188,7 +196,8 @@ export async function GET(req: Request) {
     stats = {
       moviesWatched: insights.moviesWatched,
       premiumPct: insights.premiumPct,
-      topGenrePct: mockStats.topGenrePct, // still mock until genres are wired
+      // Real top-genre share once genres arrive; mock until then.
+      topGenrePct: genreMatch?.topGenrePct ?? mockStats.topGenrePct,
     };
   } else {
     stats = buildStats(phone, archetype);

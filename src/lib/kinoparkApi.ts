@@ -16,6 +16,11 @@ export type PurchaseItem = {
   Amount?: number | null;
   PurchaseDate?: string | null; // ISO 8601, UTC
   SessionTime?: string | null; // ISO 8601, UTC
+  // Optional — only present once the backend adds genres to this response
+  // (the movie object already carries them in GetMovies). When absent, the
+  // genre classifier returns null and archetype falls back to the phone hash.
+  Genres?: string[] | null;
+  GenresTranslation?: { am?: string | null; en?: string | null } | null;
 };
 
 /** Standard API wrapper. `Data` is the array directly (not `Data.Items`). */
@@ -190,4 +195,91 @@ export function pickBadgeFromInsights(insights: Insights): Badge {
   }
 
   return byId("the-regular") ?? BADGES[0];
+}
+
+// ---------- Genre → archetype classification ----------
+
+/**
+ * Maps a raw genre tag (as the backend sends it — lower-cased English, e.g.
+ * "horror", "sci-fi", "drama") onto one of the 10 archetype ids. Several
+ * genres can point at the same archetype. Tags not listed here are ignored.
+ *
+ * This is the table that turns "what genres they actually watched" into a
+ * cinema identity — the part that was impossible while the API gave us no
+ * genre at all.
+ */
+const GENRE_TO_ARCHETYPE: Record<string, string> = {
+  horror: "horror-junkie",
+  thriller: "sleuth",
+  mystery: "sleuth",
+  crime: "sleuth",
+  detective: "sleuth",
+  noir: "sleuth",
+  "sci-fi": "scifi-nerd",
+  scifi: "scifi-nerd",
+  "science fiction": "scifi-nerd",
+  fantasy: "scifi-nerd",
+  animation: "anime-devotee",
+  anime: "anime-devotee",
+  cartoon: "anime-devotee",
+  family: "anime-devotee",
+  kids: "anime-devotee",
+  drama: "drama-queen",
+  melodrama: "drama-queen",
+  romance: "hopeless-romantic",
+  romantic: "hopeless-romantic",
+  comedy: "comedy-captain",
+  action: "action-hero",
+  adventure: "action-hero",
+  war: "action-hero",
+  western: "action-hero",
+  documentary: "cinephile",
+  biography: "cinephile",
+  history: "cinephile",
+  music: "cinephile",
+  musical: "cinephile",
+};
+
+export type GenreMatch = {
+  archetypeId: string;
+  /** Share of mapped genre tags that landed on the winning archetype (0–100). */
+  topGenrePct: number;
+};
+
+/**
+ * Decide the archetype from real watch history by tallying every film's
+ * genres onto archetypes and taking the leader. Returns null when none of
+ * the rows carry a recognised genre (i.e. the backend hasn't added the field
+ * yet) — the caller then falls back to the deterministic phone-hash pick.
+ */
+export function classifyArchetypeByGenre(items: PurchaseItem[]): GenreMatch | null {
+  const tally = new Map<string, number>();
+  let totalHits = 0;
+  for (const item of items) {
+    const genres = item.Genres;
+    if (!genres || genres.length === 0) continue;
+    for (const raw of genres) {
+      const tag = (raw ?? "").toLowerCase().trim();
+      const archetypeId = GENRE_TO_ARCHETYPE[tag];
+      if (!archetypeId) continue;
+      tally.set(archetypeId, (tally.get(archetypeId) ?? 0) + 1);
+      totalHits++;
+    }
+  }
+  if (totalHits === 0) return null;
+
+  let archetypeId: string | null = null;
+  let best = -1;
+  for (const [id, n] of tally) {
+    if (n > best) {
+      best = n;
+      archetypeId = id;
+    }
+  }
+  if (!archetypeId) return null;
+
+  return {
+    archetypeId,
+    topGenrePct: Math.round((best / totalHits) * 100),
+  };
 }
