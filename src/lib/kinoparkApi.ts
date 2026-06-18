@@ -1,151 +1,152 @@
 import { BADGES, type Badge } from "@/lib/archetypes";
 
-const BASE_URL = process.env.API_BASE_URL ?? "";
-const TOKEN = process.env.API_TOKEN ?? "";
+// Public endpoint — no auth, identifies the customer by PhoneNumber, so every
+// caller now sees their OWN purchase history (no shared service token needed).
+// Override the host via API_BASE_URL if it ever moves.
+const BASE_URL = process.env.API_BASE_URL ?? "https://mobileapi.mallapp.am";
+const ENDPOINT = `${BASE_URL}/api/kinopark/GetPurchaseHistoryByPhone`;
 
-export type Transaction = {
-  OrderId: string;
-  TotalPrice: number;
-  TransactionDate: string; // "DD-MM-YYYY HH:MM"
-  TransactionType: number;
-  Status: number;
+/** One purchased movie session (ticket purchase). */
+export type PurchaseItem = {
+  MovieName: { am?: string | null; en?: string | null } | null;
+  SessionId?: string | null;
+  HallNumber?: number | null;
+  TicketCount?: number | null;
+  Amount?: number | null;
+  PurchaseDate?: string | null; // ISO 8601, UTC
+  SessionTime?: string | null; // ISO 8601, UTC
 };
 
-export type TransactionsResponse = {
+/** Standard API wrapper. `Data` is the array directly (not `Data.Items`). */
+export type PurchaseHistoryResponse = {
+  Data?: PurchaseItem[] | null;
   HasError: boolean;
-  Data?: {
-    PageItemCount: number;
-    CurrentPageNumber: number;
-    TotalCount: number;
-    Items: Transaction[];
-  };
-  ResponseMessage: string | null;
+  Message?: string | null;
 };
 
-// NOTE: the live endpoint that responds is GetTransactionsHistory.
-// The user is identified by the token, not by PhoneNumber — so today
-// every caller will see the token owner's data. Replace API_TOKEN with
-// a service token that accepts an arbitrary PhoneNumber when ready.
-export async function getPurchaseHistory(
-  _phoneNumber: string,
-): Promise<TransactionsResponse | null> {
-  if (!BASE_URL || !TOKEN) return null;
-
-  try {
-    const res = await fetch(
-      `${BASE_URL}/api/Payment/GetTransactionsHistory`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: TOKEN,
-          "Content-Type": "application/json",
-          Referer: "https://kinopark.am/",
-          Origin: "https://kinopark.am",
-        },
-        body: JSON.stringify({}),
-        cache: "no-store",
-      },
-    );
-    if (!res.ok) return null;
-    return (await res.json()) as TransactionsResponse;
-  } catch {
-    return null;
-  }
+/**
+ * Normalise whatever the user typed into the DB format `374XXXXXXXX`.
+ * Strips `+`, spaces, parentheses, dashes; maps a leading `0` or a bare
+ * 8-digit subscriber number onto the full country-code form. Returns the
+ * digits unchanged if it can't confidently reshape them.
+ */
+export function normalizePhone(input: string): string {
+  let d = (input ?? "").replace(/\D/g, ""); // drop +, spaces, (), -, etc.
+  if (d.startsWith("00")) d = d.slice(2); // 00374... → 374...
+  if (d.startsWith("374")) return d; // already full
+  if (d.startsWith("0")) d = d.slice(1); // 0XXXXXXXX → XXXXXXXX
+  if (d.length === 8) return `374${d}`; // bare subscriber → full
+  return d;
 }
 
-export type TransactionDetail = {
-  HasError: boolean;
-  Data?: {
-    MovieName?: { am: string; en: string };
-    SessionTime?: string;
-    Screen?: number;
-    Tickets?: Array<{ RowIndex: number; ColumnIndex: number; Price: number }>;
-    TotalAmount?: number;
-    ConcessionItems?: { Items: unknown[]; GroupPrice: number };
-  };
-};
-
-export async function getTransactionDetails(
-  orderId: string,
-): Promise<TransactionDetail | null> {
-  if (!BASE_URL || !TOKEN) return null;
+export async function getPurchaseHistory(
+  phoneNumber: string,
+): Promise<PurchaseHistoryResponse | null> {
+  const phone = normalizePhone(phoneNumber);
 
   try {
-    const res = await fetch(`${BASE_URL}/api/Payment/GetTransactionDetails`, {
+    const res = await fetch(ENDPOINT, {
       method: "POST",
-      headers: {
-        Authorization: TOKEN,
-        "Content-Type": "application/json",
-        Referer: "https://kinopark.am/",
-        Origin: "https://kinopark.am",
-      },
-      body: JSON.stringify({ OrderId: orderId }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ PhoneNumber: phone }),
       cache: "no-store",
     });
     if (!res.ok) return null;
-    return (await res.json()) as TransactionDetail;
+    return (await res.json()) as PurchaseHistoryResponse;
   } catch {
     return null;
   }
 }
 
-// ---------- Analytics over transactions ----------
+// ---------- Helpers over the purchase items ----------
+
+/** Title in the caller's locale, falling back to the other language. */
+export function movieTitle(item: PurchaseItem, lang: "en" | "am" = "en"): string {
+  const n = item.MovieName;
+  if (!n) return "";
+  const primary = lang === "am" ? n.am : n.en;
+  const fallback = lang === "am" ? n.en : n.am;
+  return (primary ?? fallback ?? "").trim();
+}
+
+/** Defensive: skip rows the backend should already have filtered out. */
+function isTicketRow(item: PurchaseItem): boolean {
+  return movieTitle(item).length > 0;
+}
+
+/**
+ * Shift a UTC instant into Yerevan local time (UTC+4, no DST) so the UTC
+ * getters on the returned Date read as local wall-clock values.
+ */
+function toYerevan(iso?: string | null): Date | null {
+  if (!iso) return null;
+  const t = Date.parse(iso);
+  if (Number.isNaN(t)) return null;
+  return new Date(t + 4 * 3600 * 1000);
+}
+
+// ---------- Analytics over purchase history ----------
 
 export type Insights = {
   moviesWatched: number;
   totalSpent: number;
   averageTicketPrice: number;
   premiumPct: number;
-  marathonerScore: number;
-  nightOwlScore: number;
-  weekdayScore: number;
-  regularityScore: number;
+  pairPct: number; // share of visits with 2+ tickets (date-night signal)
+  marathonerScore: number; // most movies seen in a single day
+  nightOwlScore: number; // % of sessions starting 21:00 or later
+  weekdayScore: number; // % of sessions Mon–Fri
+  regularityScore: number; // distinct months with a purchase
   hasConcessions: boolean;
 };
 
-function parseArmenianDate(s: string): Date | null {
-  const m = s.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{1,2}):(\d{2})$/);
-  if (!m) return null;
-  const [, dd, mm, yyyy, hh, mi] = m;
-  return new Date(+yyyy, +mm - 1, +dd, +hh, +mi);
-}
+export function analyzeTransactions(items: PurchaseItem[]): Insights {
+  const rows = items.filter(isTicketRow);
+  const moviesWatched = rows.length;
 
-export function analyzeTransactions(items: Transaction[]): Insights {
-  const ticketItems = items.filter((i) => i.TransactionType === 1);
-
-  const moviesWatched = ticketItems.length;
-  const totalSpent = ticketItems.reduce((s, i) => s + (i.TotalPrice ?? 0), 0);
-  const averageTicketPrice =
-    moviesWatched > 0 ? totalSpent / moviesWatched : 0;
-  const premiumCount = ticketItems.filter((i) => i.TotalPrice >= 2500).length;
+  let totalTickets = 0;
+  let totalSpent = 0;
+  let premiumCount = 0;
+  let pairCount = 0;
+  for (const r of rows) {
+    const tickets = Math.max(1, r.TicketCount ?? 1);
+    const amount = r.Amount ?? 0;
+    totalTickets += tickets;
+    totalSpent += amount;
+    if (amount / tickets >= 2500) premiumCount++;
+    if (tickets >= 2) pairCount++;
+  }
+  const averageTicketPrice = totalTickets > 0 ? totalSpent / totalTickets : 0;
   const premiumPct =
     moviesWatched > 0 ? Math.round((premiumCount / moviesWatched) * 100) : 0;
+  const pairPct =
+    moviesWatched > 0 ? Math.round((pairCount / moviesWatched) * 100) : 0;
 
   const byDay = new Map<string, number>();
+  const months = new Set<string>();
   let nightCount = 0;
   let weekdayCount = 0;
-  for (const t of ticketItems) {
-    const d = parseArmenianDate(t.TransactionDate);
-    if (!d) continue;
-    const dayKey = d.toISOString().slice(0, 10);
-    byDay.set(dayKey, (byDay.get(dayKey) ?? 0) + 1);
-    if (d.getHours() >= 21) nightCount++;
-    const dow = d.getDay();
-    if (dow >= 1 && dow <= 5) weekdayCount++;
+  let dated = 0;
+  for (const r of rows) {
+    const session = toYerevan(r.SessionTime ?? r.PurchaseDate);
+    if (session) {
+      dated++;
+      const dayKey = `${session.getUTCFullYear()}-${session.getUTCMonth()}-${session.getUTCDate()}`;
+      byDay.set(dayKey, (byDay.get(dayKey) ?? 0) + 1);
+      if (session.getUTCHours() >= 21) nightCount++;
+      const dow = session.getUTCDay();
+      if (dow >= 1 && dow <= 5) weekdayCount++;
+    }
+    const purchase = toYerevan(r.PurchaseDate ?? r.SessionTime);
+    if (purchase) {
+      months.add(`${purchase.getUTCFullYear()}-${purchase.getUTCMonth()}`);
+    }
   }
-  const marathonerScore = byDay.size > 0
-    ? Math.max(...Array.from(byDay.values()))
-    : 0;
-  const nightOwlScore =
-    moviesWatched > 0 ? Math.round((nightCount / moviesWatched) * 100) : 0;
-  const weekdayScore =
-    moviesWatched > 0 ? Math.round((weekdayCount / moviesWatched) * 100) : 0;
-
-  const months = new Set<string>();
-  for (const t of ticketItems) {
-    const d = parseArmenianDate(t.TransactionDate);
-    if (d) months.add(`${d.getFullYear()}-${d.getMonth()}`);
-  }
+  const denom = dated || moviesWatched || 1;
+  const marathonerScore =
+    byDay.size > 0 ? Math.max(...Array.from(byDay.values())) : 0;
+  const nightOwlScore = Math.round((nightCount / denom) * 100);
+  const weekdayScore = Math.round((weekdayCount / denom) * 100);
   const regularityScore = months.size;
 
   return {
@@ -153,6 +154,7 @@ export function analyzeTransactions(items: Transaction[]): Insights {
     totalSpent,
     averageTicketPrice,
     premiumPct,
+    pairPct,
     marathonerScore,
     nightOwlScore,
     weekdayScore,
@@ -170,6 +172,9 @@ export function pickBadgeFromInsights(insights: Insights): Badge {
   if (insights.premiumPct >= 60) {
     return byId("premium-baby") ?? BADGES[0];
   }
+  if (insights.pairPct >= 50) {
+    return byId("date-night") ?? BADGES[0];
+  }
   if (insights.regularityScore >= 6) {
     return byId("the-regular") ?? BADGES[0];
   }
@@ -179,11 +184,8 @@ export function pickBadgeFromInsights(insights: Insights): Badge {
   if (insights.nightOwlScore >= 50) {
     return byId("front-row") ?? BADGES[0];
   }
-  if (insights.averageTicketPrice < 1500) {
+  if (insights.pairPct <= 10 && insights.averageTicketPrice < 2000) {
     return byId("lone-wolf") ?? BADGES[0];
-  }
-  if (insights.averageTicketPrice >= 3000) {
-    return byId("date-night") ?? BADGES[0];
   }
 
   return byId("the-regular") ?? BADGES[0];

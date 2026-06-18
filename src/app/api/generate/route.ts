@@ -150,10 +150,9 @@ export async function GET(req: Request) {
     });
   }
 
-  // API expects digits only: "37491240225"
-  const phoneDigits = phone.replace(/^\+/, "");
-  const history = await getPurchaseHistory(phoneDigits);
-  const items = history?.Data?.Items ?? [];
+  // getPurchaseHistory normalises the number itself (+374… → 374…).
+  const history = await getPurchaseHistory(phone);
+  const items = history?.Data ?? [];
   const hasRealData = !history?.HasError && items.length > 0;
 
   // No purchase history and no forced archetype → show the empty-state card
