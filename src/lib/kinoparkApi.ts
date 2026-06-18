@@ -1,4 +1,5 @@
 import { BADGES, type Badge } from "@/lib/archetypes";
+import { lookupMovieGenres } from "@/lib/movieGenres";
 
 // Public endpoint — no auth, identifies the customer by PhoneNumber, so every
 // caller now sees their OWN purchase history (no shared service token needed).
@@ -233,11 +234,15 @@ const GENRE_TO_ARCHETYPE: Record<string, string> = {
   adventure: "action-hero",
   war: "action-hero",
   western: "action-hero",
+  military: "action-hero",
   documentary: "cinephile",
   biography: "cinephile",
   history: "cinephile",
   music: "cinephile",
   musical: "cinephile",
+  concert: "cinephile",
+  opera: "cinephile",
+  ballet: "cinephile",
 };
 
 export type GenreMatch = {
@@ -256,7 +261,15 @@ export function classifyArchetypeByGenre(items: PurchaseItem[]): GenreMatch | nu
   const tally = new Map<string, number>();
   let totalHits = 0;
   for (const item of items) {
-    const genres = item.Genres;
+    // Prefer genres the API provides; otherwise resolve them from the showed-
+    // movies archive by title (en, falling back to am).
+    let genres = item.Genres && item.Genres.length ? item.Genres : null;
+    if (!genres) {
+      const fromArchive = lookupMovieGenres(
+        movieTitle(item, "en") || movieTitle(item, "am"),
+      );
+      if (fromArchive.length) genres = fromArchive;
+    }
     if (!genres || genres.length === 0) continue;
     for (const raw of genres) {
       const tag = (raw ?? "").toLowerCase().trim();
