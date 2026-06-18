@@ -2,9 +2,10 @@ import { BADGES, type Badge } from "@/lib/archetypes";
 
 // Public endpoint — no auth, identifies the customer by PhoneNumber, so every
 // caller now sees their OWN purchase history (no shared service token needed).
-// Override the host via API_BASE_URL if it ever moves.
-const BASE_URL = process.env.API_BASE_URL ?? "https://mobileapi.mallapp.am";
-const ENDPOINT = `${BASE_URL}/api/kinopark/GetPurchaseHistoryByPhone`;
+// Hard-coded host on purpose: a stale API_BASE_URL env var (left over from the
+// old token-based endpoint) silently pointed us at the wrong host and made
+// every lookup 404. If the host ever moves, change it here.
+const ENDPOINT = "https://mobileapi.mallapp.am/api/kinopark/GetPurchaseHistoryByPhone";
 
 /** One purchased movie session (ticket purchase). */
 export type PurchaseItem = {
