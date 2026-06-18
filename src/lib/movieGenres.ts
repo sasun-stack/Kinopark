@@ -16,7 +16,7 @@ import RAW from "@/lib/showedMoviesGenres.json";
 const PREFIX =
   /^\s*(2d|3d|4dx|imax|atmos|dolby|arm|eng|kor|jap|rus|sub|2д|3д|д|рус|арм)\b/;
 
-function normalizeTitle(s: string): string {
+export function normalizeTitle(s: string): string {
   let t = (s ?? "").toLowerCase();
   while (PREFIX.test(t)) t = t.replace(PREFIX, "");
   return t.replace(/[^a-z0-9]/g, "");

@@ -19,6 +19,8 @@ import {
   pickBadgeFromInsights,
   classifyArchetypeByGenre,
 } from "@/lib/kinoparkApi";
+import { getLiveGenreMap } from "@/lib/movieCatalog";
+import { normalizeTitle } from "@/lib/movieGenres";
 
 export type ApiResponse = {
   archetype: Archetype;
@@ -151,10 +153,16 @@ export async function GET(req: Request) {
     });
   }
 
-  // getPurchaseHistory normalises the number itself (+374… → 374…).
-  const history = await getPurchaseHistory(phone);
+  // getPurchaseHistory normalises the number itself (+374… → 374…). Fetch the
+  // live genre catalogue in parallel so it adds no extra latency (cached ~1wk).
+  const [history, liveMap] = await Promise.all([
+    getPurchaseHistory(phone),
+    getLiveGenreMap(),
+  ]);
   const items = history?.Data ?? [];
   const hasRealData = !history?.HasError && items.length > 0;
+  const liveLookup = (title: string): string[] =>
+    liveMap[normalizeTitle(title)] ?? [];
 
   // No purchase history and no forced archetype → show the empty-state card
   // instead of a random archetype.
@@ -171,7 +179,9 @@ export async function GET(req: Request) {
   const forcedArch = archetypeOverride
     ? ARCHETYPES.find((a) => a.id === archetypeOverride)
     : null;
-  const genreMatch = hasRealData ? classifyArchetypeByGenre(items) : null;
+  const genreMatch = hasRealData
+    ? classifyArchetypeByGenre(items, liveLookup)
+    : null;
   const genreArch = genreMatch
     ? ARCHETYPES.find((a) => a.id === genreMatch.archetypeId)
     : null;

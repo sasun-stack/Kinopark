@@ -257,18 +257,21 @@ export type GenreMatch = {
  * the rows carry a recognised genre (i.e. the backend hasn't added the field
  * yet) — the caller then falls back to the deterministic phone-hash pick.
  */
-export function classifyArchetypeByGenre(items: PurchaseItem[]): GenreMatch | null {
+export function classifyArchetypeByGenre(
+  items: PurchaseItem[],
+  liveLookup?: (title: string) => string[],
+): GenreMatch | null {
   const tally = new Map<string, number>();
   let totalHits = 0;
   for (const item of items) {
-    // Prefer genres the API provides; otherwise resolve them from the showed-
-    // movies archive by title (en, falling back to am).
+    // Genre source priority: (1) genres the API provides, (2) the live
+    // current catalogue (covers new releases automatically), (3) the static
+    // showed-movies archive (all-time history up to the last harvest).
     let genres = item.Genres && item.Genres.length ? item.Genres : null;
     if (!genres) {
-      const fromArchive = lookupMovieGenres(
-        movieTitle(item, "en") || movieTitle(item, "am"),
-      );
-      if (fromArchive.length) genres = fromArchive;
+      const title = movieTitle(item, "en") || movieTitle(item, "am");
+      const fromLive = liveLookup ? liveLookup(title) : [];
+      genres = fromLive.length ? fromLive : lookupMovieGenres(title);
     }
     if (!genres || genres.length === 0) continue;
     for (const raw of genres) {
